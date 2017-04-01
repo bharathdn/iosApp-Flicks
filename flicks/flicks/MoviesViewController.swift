@@ -12,14 +12,20 @@ import AFNetworking
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     var movies: [NSDictionary]?
+    var movieEndPoint: String!
+    
+    let refreshControl = UIRefreshControl()
     
     @IBOutlet weak var myTableView: UITableView!
-    var movieEndPoint: String!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         myTableView.dataSource = self
         myTableView.delegate = self
+        
+        refreshControl.addTarget(self, action: #selector(networkRequest), for: UIControlEvents.valueChanged)
+        myTableView.insertSubview(refreshControl, at: 0)
         
         networkRequest()
     }
@@ -43,6 +49,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                         
                         self.movies = responseDictionary["results"] as? [NSDictionary]
                         self.myTableView.reloadData()
+                        self.refreshControl.endRefreshing()
                     }
                 }
         });
@@ -69,7 +76,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         cell.overviewLabel.text = overview
         
         if let posterPath = movie?["poster_path"] as? String {
-            let baseImageUrl = "https://image.tmdb.org/t/p/w500"
+            let baseImageUrl = "https://image.tmdb.org/t/p/original"
         
             let imageUrl = NSURL(string: baseImageUrl + posterPath)
             cell.posterView.setImageWith(imageUrl! as URL)
