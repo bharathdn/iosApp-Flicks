@@ -13,12 +13,16 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var overviewLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var posterImageView: UIImageView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var infoView: UIView!
     
     var movie: NSDictionary!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(movie)
+        
+        scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height:  infoView.frame.origin.y + infoView.frame.size.height)
+        
         if let posterPath = movie?["poster_path"] as? String {
             let baseImageUrl = "https://image.tmdb.org/t/p/w500"
             
@@ -31,6 +35,7 @@ class DetailViewController: UIViewController {
         
         let overview = movie["overview"] as! String
         overviewLabel.text = overview
+        overviewLabel.sizeToFit()
     }
 
     override func didReceiveMemoryWarning() {
