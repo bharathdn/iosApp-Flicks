@@ -18,16 +18,23 @@ class DetailViewController: UIViewController {
     
     var movie: NSDictionary!
     
+    func slideUpInfoView(_ sender: UIPanGestureRecognizer) {
+        print("Hello")
+        infoView.frame.origin.y = posterImageView.frame.size.height - infoView.frame.size.height
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height:  infoView.frame.origin.y + infoView.frame.size.height)
         
         if let posterPath = movie?["poster_path"] as? String {
             let baseImageUrl = "https://image.tmdb.org/t/p/w500"
             
             let imageUrl = NSURL(string: baseImageUrl + posterPath)
             posterImageView.setImageWith(imageUrl! as URL)
+        
+        // add gesture to slide up infoview when the infoview is tapped
+            let gesture = UITapGestureRecognizer(target: self, action: #selector(slideUpInfoView(_:)))
+            infoView.addGestureRecognizer(gesture)
         }
         
         let title = movie["title"] as! String
