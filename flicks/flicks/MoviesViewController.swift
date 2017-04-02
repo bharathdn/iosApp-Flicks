@@ -18,12 +18,15 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     let refreshControl = UIRefreshControl()
     
     @IBOutlet weak var myTableView: UITableView!
+    @IBOutlet weak var networkErrorView: UIView!
+    @IBOutlet weak var networkErrorLabel: UILabel!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         myTableView.dataSource = self
         myTableView.delegate = self
+        self.toggleNetWorkError(hideErrorValue: true)
         
         refreshControl.addTarget(self, action: #selector(networkRequest), for: UIControlEvents.valueChanged)
         myTableView.insertSubview(refreshControl, at: 0)
@@ -43,7 +46,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        
+        self.toggleNetWorkError(hideErrorValue: true)
         let task : URLSessionDataTask = session.dataTask(
             with: request as URLRequest,
             completionHandler: { (data, response, error) in
@@ -57,8 +60,22 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                         self.refreshControl.endRefreshing()
                     }
                 }
+                else {
+                    self.toggleNetWorkError(hideErrorValue: false)
+                }
         });
         task.resume()
+    }
+    
+    func toggleNetWorkError(hideErrorValue: Bool) {
+        if(hideErrorValue) {
+            networkErrorView.frame.size.height = 0;
+        }
+        else {
+            networkErrorView.frame.size.height = 44;
+        }
+        networkErrorView.isHidden = hideErrorValue
+        networkErrorLabel.isHidden = hideErrorValue
     }
 
     override func didReceiveMemoryWarning() {
