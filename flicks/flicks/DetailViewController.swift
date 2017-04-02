@@ -19,8 +19,11 @@ class DetailViewController: UIViewController {
     var movie: NSDictionary!
     
     func slideUpInfoView(_ sender: UIPanGestureRecognizer) {
-        print("Hello")
-        infoView.frame.origin.y = posterImageView.frame.size.height - infoView.frame.size.height
+        
+        UIView.animate(withDuration: 0.3) {
+            self.infoView.frame.origin.y = self.posterImageView.frame.size.height - self.infoView.frame.size.height
+        }
+        
     }
     
     override func viewDidLoad() {
@@ -34,6 +37,7 @@ class DetailViewController: UIViewController {
         
         // add gesture to slide up infoview when the infoview is tapped
             let gesture = UITapGestureRecognizer(target: self, action: #selector(slideUpInfoView(_:)))
+            
             infoView.addGestureRecognizer(gesture)
         }
         
