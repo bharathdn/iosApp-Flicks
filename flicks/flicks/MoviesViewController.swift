@@ -61,6 +61,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                     }
                 }
                 else {
+                    print("Network Error")
                     self.toggleNetWorkError(hideErrorValue: false)
                 }
         });
