@@ -18,7 +18,7 @@ The following **optional** features are implemented:
 
 - [x] Add a tab bar for **Now Playing** and **Top Rated** movies.
 - [ ] Implement segmented control to switch between list view and grid view.
-- [ ] Add a search bar.
+- [x] Add a search bar.
 - [ ] All images fade in.
 - [ ] For the large poster, load the low-res image first, switch to high-res when complete.
 - [ ] Customize the highlight and selection effect of the cell.
@@ -26,13 +26,14 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- In the Movie detail view, the movie info reacts to tap by sliding up fully to show the full description
+  as shown in assignment screenshot
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/FrshWVy.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/WqhrCUg.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -41,7 +42,9 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 Describe any challenges encountered while building the app.
 
 * Showing the Network Error caused some issues while refreshing.
-
+* Tried adding SearchBar using UI, But could not add due to Network error view present on top of TableView.
+  Instead I've added the search bar programmatically and placed it on Navigation Bar
+  
 ## License
 
     Copyright [2017] [Bharath D N Reddy]
