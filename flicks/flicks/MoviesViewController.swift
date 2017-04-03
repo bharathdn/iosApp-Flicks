@@ -10,12 +10,15 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
 
     var movies: [NSDictionary]?
     var movieEndPoint: String!
     
     let refreshControl = UIRefreshControl()
+    let searchBar = UISearchBar()
+    var searchResultsShown = false
+    var filteredMovies: [NSDictionary]?
     
     @IBOutlet weak var myTableView: UITableView!
     @IBOutlet weak var networkErrorView: UIView!
@@ -27,6 +30,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         myTableView.dataSource = self
         myTableView.delegate = self
         self.toggleNetWorkError(hideErrorValue: true)
+        
+        // searchbar
+        
+        searchBar.showsCancelButton = true
+        searchBar.delegate = self
+        self.navigationItem.titleView = searchBar
         
         refreshControl.addTarget(self, action: #selector(networkRequest), for: UIControlEvents.valueChanged)
         myTableView.insertSubview(refreshControl, at: 0)
@@ -85,6 +94,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if(searchResultsShown) {
+            return filteredMovies?.count ?? 0
+        }
         return movies?.count ?? 0
     }
     
@@ -92,7 +104,13 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         let cell = myTableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieCell
         
-        let movie = movies?[indexPath.row]
+        let movie: NSDictionary?
+        if(searchResultsShown) {
+            movie = filteredMovies?[indexPath.row]
+        } else {
+            movie = movies?[indexPath.row]
+        }
+
         let title = movie?["title"] as! String
         let overview = movie?["overview"] as! String
         cell.titleLabel.text = title
@@ -104,13 +122,39 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             let imageUrl = NSURL(string: baseImageUrl + posterPath)
             cell.posterView.setImageWith(imageUrl! as URL)
         }
-        
-        
-        
         return cell
     }
     
-
+    // Search related functions
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        let searchText = searchBar.text?.lowercased()
+        if(searchText == "") {
+           searchBarCancelButtonClicked(searchBar)
+           return
+        }
+        
+        filteredMovies = movies?.filter({ (movie: NSDictionary) -> Bool in
+            let title = movie["title"] as! String
+            return (title.lowercased().contains(searchText!))
+        })
+        searchResultsShown = true
+        self.myTableView.reloadData()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchResultsShown = true
+        searchBar.endEditing(true)
+        self.myTableView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchResultsShown = false
+        self.myTableView.reloadData()
+    }
+    
+    
     
     // MARK: - Navigation
 
